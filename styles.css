@@ -75,45 +75,31 @@ h2 {
 
 /* ───────────── Hero ───────────── */
 .hero {
+  position: relative;
   min-height: 100vh; min-height: 100svh;
-  display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: clamp(24px, 5vw, 80px);
-  padding: calc(var(--nav-h) + 24px) max(var(--gutter), calc((100vw - 1180px) / 2)) 48px;
+  display: grid; place-items: center;
+  padding: calc(var(--nav-h) + 24px) var(--gutter) 120px;
   background: var(--green); color: var(--white);
   overflow: hidden;
 }
 /* margen arriba: deja lugar a la taza que derrama sobre la primera "a" */
-.hero__logo { position: relative; justify-self: center; width: min(100%, 62vh, 560px); margin-top: 9vh; }
+.hero__logo { width: min(72vw, 54vh, 520px); width: min(72vw, 54svh, 520px); margin-top: 8vh; }
 .logo { display: block; width: 100%; height: auto; overflow: visible; }
 .logo path { fill: none; stroke: var(--white); stroke-width: 36; }
 .logo .l-dot { fill: var(--white); transform-origin: 703px 465px; }
 
-.hero__replay {
-  display: block; margin: 10px auto -44px; min-height: 34px;
-  padding: 8px 14px; border: 0; background: none; cursor: pointer;
-  font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; color: var(--mist);
-  opacity: .75; transition: opacity .2s;
-}
-.hero__replay:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
-.hero__copy { max-width: 520px; }
-.hero__copy .eyebrow { color: var(--mist); }
-h1 {
-  margin-top: 18px;
-  font-size: clamp(2.6rem, 5.4vw, 4.8rem);
-  font-weight: 800; line-height: 1; letter-spacing: -.025em; text-transform: uppercase;
+.hero__down {
+  position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%);
+  display: grid; justify-items: center; gap: 6px; padding: 10px 18px;
+  font-size: .85rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; text-decoration: none; white-space: nowrap;
 }
-.hero__lead { margin-top: 22px; font-size: clamp(1.05rem, 1.6vw, 1.3rem); font-weight: 300; color: var(--mist); }
-.hero__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
-
-.btn {
-  display: inline-flex; align-items: center; min-height: 50px; padding: 0 26px;
-  border: 2px solid var(--white); border-radius: 999px;
-  font-weight: 600; text-decoration: none;
-  transition: background-color .25s, color .25s, transform .25s var(--ease-out);
+.hero__down svg {
+  width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  animation: nudge 1.8s ease-in-out infinite;
 }
-.btn:hover { transform: translateY(-2px); }
-.btn--light { background: var(--white); color: var(--green); }
-.btn--ghost:hover { background: var(--white); color: var(--green); }
+@keyframes nudge { 0%, 100% { transform: none; } 50% { transform: translateY(7px); } }
 
 /* Intro: solo corre con .is-playing; sin esa clase se ve el estado final */
 .logo .logo__stream { opacity: 0; }
@@ -131,11 +117,7 @@ h1 {
 .hero.is-playing .l-i  { --d: 1.45s; --t: .25s; }
 .hero.is-playing .l-n  { --d: 1.5s; --t: .5s; animation-timing-function: cubic-bezier(.3, .2, .3, 1); }
 .hero.is-playing .l-dot { animation: pop .3s var(--ease-out) 1.7s both; }
-.hero.is-playing .hero__copy > * { animation: rise .7s var(--ease-out) both; animation-delay: calc(2.55s + var(--i, 0) * .09s); }
-.hero.is-playing .hero__replay { animation: fade .4s 3s both; }
-.hero__copy > :nth-child(2) { --i: 1; }
-.hero__copy > :nth-child(3) { --i: 2; }
-.hero__copy > :nth-child(4) { --i: 3; }
+.hero.is-playing .hero__down { animation: fade .6s 2.6s both; }
 
 /* La taza aparece arriba de la primera "a", se inclina y derrama la línea que
    escribe la palabra; después se endereza y salta a su lugar como última "a". */
@@ -255,17 +237,8 @@ h1 {
 
 /* ───────────── Mobile ───────────── */
 @media (max-width: 860px) {
-  /* Todo el inicio tiene que entrar en una pantalla de celular, con las barras del navegador */
-  .hero {
-    grid-template-columns: 1fr; align-content: center; justify-items: center; gap: 14px; text-align: center;
-    padding: calc(var(--nav-h) + 8px) var(--gutter) 28px;
-  }
-  .hero__logo { width: min(54vw, 30vh, 300px); width: min(54vw, 30svh, 300px); margin-top: 4vh; }
-  .hero__replay { margin: 4px auto 0; }
-  .hero__copy { margin: 0 auto; }
-  h1 { margin-top: 10px; font-size: clamp(1.9rem, 8.6vw, 2.8rem); }
-  .hero__lead { margin-top: 12px; }
-  .hero__actions { justify-content: center; margin-top: 20px; }
+  .hero { padding-bottom: 104px; }
+  .hero__logo { margin-top: 6vh; }
 
   .menu__body.has-viewer { grid-template-columns: 1fr; gap: 16px; }
   .viewer {

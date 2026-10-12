@@ -5,7 +5,7 @@
 
   /* ───────────── Intro del logo ───────────── */
   const hero = $('.hero');
-  const INTRO_MS = 3700;
+  const INTRO_MS = 3400;
   let introTimer;
 
   function playIntro() {
@@ -22,7 +22,6 @@
   }
 
   playIntro();
-  $('#replay').addEventListener('click', (e) => { e.stopPropagation(); playIntro(); });
   // Cualquier toque o scroll durante la intro la saltea
   hero.addEventListener('click', endIntro);
   addEventListener('scroll', () => { if (scrollY > 80) endIntro(); }, { passive: true });
@@ -30,6 +29,7 @@
   /* ───────────── Nav: fondo sólido y taza que se llena con el scroll ───────────── */
   const nav = $('#nav');
   const navFill = $('#nav-fill');
+  const navLinks = [...document.querySelectorAll('.nav nav a')];
   const LAYER_H = 412;
 
   function onScroll() {
@@ -37,6 +37,13 @@
     const max = document.documentElement.scrollHeight - innerHeight;
     const progress = max > 0 ? Math.min(scrollY / max, 1) : 0;
     navFill.style.transform = `translateY(${(1 - progress) * LAYER_H}px)`;
+    // Marca en el nav la sección que ocupa el centro de la pantalla
+    navLinks.forEach((link) => {
+      const box = $(link.hash).getBoundingClientRect();
+      const on = box.top <= innerHeight / 2 && box.bottom > innerHeight / 2;
+      if (on) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    });
   }
   addEventListener('scroll', onScroll, { passive: true });
   addEventListener('resize', onScroll);
@@ -206,17 +213,6 @@
     new IntersectionObserver(([entry], obs) => {
       if (entry.isIntersecting) { firstTab(); obs.disconnect(); }
     }, { rootMargin: '0px 0px -25% 0px' }).observe(bodyEl);
-
-    const links = [...document.querySelectorAll('.nav nav a')];
-    const spy = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        const link = links.find((a) => a.hash === '#' + entry.target.id);
-        if (!link) return;
-        if (entry.isIntersecting) link.setAttribute('aria-current', 'true');
-        else link.removeAttribute('aria-current');
-      });
-    }, { rootMargin: '-45% 0px -45% 0px' });
-    document.querySelectorAll('main section[id]').forEach((s) => spy.observe(s));
   } else {
     document.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
   }
