@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aminta · Café de especialidad en Balvanera</title>
+  <meta name="description" content="Aminta es una cafetería de especialidad en Balvanera, Buenos Aires. Café, pastelería y un lugar para sentirse parte.">
+  <meta name="theme-color" content="#305c56">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,800;0,900;1,400;1,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+  <a class="skip" href="#carta">Ir a la carta</a>
+
+  <header class="nav" id="nav">
+    <a class="nav__home" href="#inicio" aria-label="Aminta, volver al inicio">
+      <!-- La taza del logo se llena a medida que se recorre la página -->
+      <svg class="nav__cup" viewBox="330 380 592 590" aria-hidden="true">
+        <defs>
+          <clipPath id="nav-cup-clip"><path d="M427.5 470H825V690A198.75 188 0 0 1 427.5 690Z"/></clipPath>
+        </defs>
+        <g clip-path="url(#nav-cup-clip)"><rect id="nav-fill" x="420" y="470" width="412" height="412"/></g>
+        <g class="cup-stroke">
+          <path d="M355 434H896"/>
+          <path d="M391.5 434V690A234.75 224 0 0 0 861 690"/>
+          <path d="M861 400V935"/>
+        </g>
+      </svg>
+    </a>
+    <nav aria-label="Secciones">
+      <a href="#carta">Carta</a>
+      <a href="#visitanos">Visitanos</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ───────────── Inicio: la taza se inclina, derrama la línea que escribe "aminta" y vuelve a su lugar como última "a" ───────────── -->
+    <section class="hero" id="inicio">
+      <div class="hero__logo">
+        <svg class="logo" viewBox="205 212 850 914" role="img" aria-label="aminta">
+          <path class="logo__stream" pathLength="1" d="M372 196V254"/>
+          <g class="logo__letters">
+            <!-- En el orden en que corre la línea que derrama la taza -->
+            <path class="draw l-a1" pathLength="1" d="M372 254A121 121 0 1 0 372 496A121 121 0 1 0 372 254"/>
+            <path class="draw l-a2" pathLength="1" d="M493.5 375V565"/>
+            <path class="draw l-m2" pathLength="1" d="M493.5 564.85A89.25 89.25 0 0 1 612.5 649V795"/>
+            <path class="draw l-m3" pathLength="1" d="M523.25 559.75A89.25 89.25 0 0 0 434 649V795"/>
+            <path class="draw l-m1" pathLength="1" d="M434 649A90.75 90.75 0 0 0 252.5 649V992A88 88 0 0 0 428.5 992"/>
+            <path class="draw l-t" pathLength="1" d="M234 858H423"/>
+            <path class="draw l-i" pathLength="1" d="M703 795V543"/>
+            <circle class="l-dot" cx="703" cy="465" r="26"/>
+            <path class="draw l-n" pathLength="1" d="M793.5 795V663A106.75 106.75 0 0 1 1007 663V795"/>
+          </g>
+          <g transform="translate(591 970)">
+            <g class="logo__cup">
+              <path d="M-129 -112H130"/>
+              <path d="M-111.5 -112V10A111.75 102 0 0 0 112 10"/>
+              <path d="M112 -128V127"/>
+            </g>
+          </g>
+        </svg>
+        <button class="hero__replay" type="button" id="replay">Ver de nuevo</button>
+      </div>
+
+      <div class="hero__copy">
+        <p class="eyebrow">Café de especialidad · Balvanera</p>
+        <h1>Mucho más que tomar un café.</h1>
+        <p class="hero__lead">Un lugar para probar, aprender y encontrarse.</p>
+        <div class="hero__actions">
+          <a class="btn btn--light" href="#carta">Ver la carta</a>
+          <a class="btn btn--ghost" href="#visitanos">Cómo llegar</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Carta ───────────── -->
+    <section class="menu" id="carta">
+      <div class="wrap">
+        <header class="menu__head reveal">
+          <p class="eyebrow">La carta</p>
+          <h2>¿Qué vas a tomar?</h2>
+          <p class="menu__hint" id="menu-hint">Elegí un café y mirá cómo se arma la taza.</p>
+        </header>
+
+        <div class="tabs" role="tablist" aria-label="Secciones de la carta" id="tabs"></div>
+
+        <div class="menu__body" id="menu-body">
+          <!-- Visor: la taza del logo se llena con las capas de cada bebida -->
+          <aside class="viewer" id="viewer" aria-live="polite">
+            <div class="viewer__stage">
+              <svg class="viewer__svg" viewBox="330 330 592 640" aria-hidden="true">
+                <defs>
+                  <clipPath id="cup-clip"><path d="M427.5 470H825V690A198.75 188 0 0 1 427.5 690Z"/></clipPath>
+                </defs>
+                <g transform="translate(626 950)">
+                  <g class="viewer__cup" id="viewer-cup">
+                    <g transform="translate(-626 -950)">
+                      <g clip-path="url(#cup-clip)">
+                        <rect class="layer" x="420" y="470" width="412" height="412"/>
+                        <rect class="layer" x="420" y="470" width="412" height="412"/>
+                        <rect class="layer" x="420" y="470" width="412" height="412"/>
+                        <rect class="layer" x="420" y="470" width="412" height="412"/>
+                        <g class="ice" id="ice">
+                          <rect x="520" y="560" width="74" height="74" rx="8" transform="rotate(-14 557 597)"/>
+                          <rect x="650" y="610" width="74" height="74" rx="8" transform="rotate(18 687 647)"/>
+                          <rect x="560" y="700" width="74" height="74" rx="8" transform="rotate(8 597 737)"/>
+                        </g>
+                      </g>
+                      <g class="cup-stroke">
+                        <path d="M355 434H896"/>
+                        <path d="M391.5 434V690A234.75 224 0 0 0 861 690"/>
+                        <path d="M861 400V935"/>
+                      </g>
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div class="viewer__info">
+              <h3 id="viewer-name"></h3>
+              <p class="viewer__meta"><span class="price" id="viewer-price"></span><span id="viewer-size"></span></p>
+              <ul class="legend" id="viewer-legend"></ul>
+            </div>
+          </aside>
+
+          <div class="panels" id="panels"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Visitanos ───────────── -->
+    <section class="visit" id="visitanos">
+      <div class="wrap">
+        <p class="eyebrow reveal">Visitanos</p>
+        <h2 class="reveal">Te esperamos en Balvanera.</h2>
+        <dl class="visit__grid">
+          <div class="reveal">
+            <dt>Dónde</dt>
+            <dd>Balvanera, Ciudad de Buenos Aires</dd>
+            <dd class="pending">Dirección a confirmar</dd>
+          </div>
+          <div class="reveal">
+            <dt>Horarios</dt>
+            <dd class="pending">Días y horarios a confirmar</dd>
+          </div>
+          <div class="reveal">
+            <dt>Escribinos</dt>
+            <dd class="pending">Instagram y WhatsApp a confirmar</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__in">
+      <p>Aminta · Café de especialidad</p>
+      <a href="#inicio">Volver arriba</a>
+    </div>
+  </footer>
+
+  <script src="menu-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
