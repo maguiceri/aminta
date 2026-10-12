@@ -23,6 +23,7 @@ body {
   color: var(--gray);
   background: var(--white);
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 
 h1, h2, h3, p, ul, dl, dd { margin: 0; }
@@ -76,7 +77,7 @@ h2 {
 .hero {
   min-height: 100vh; min-height: 100svh;
   display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: clamp(24px, 5vw, 80px);
-  padding: calc(var(--nav-h) + 24px) var(--gutter) 48px;
+  padding: calc(var(--nav-h) + 24px) max(var(--gutter), calc((100vw - 1180px) / 2)) 48px;
   background: var(--green); color: var(--white);
   overflow: hidden;
 }
@@ -254,11 +255,17 @@ h1 {
 
 /* ───────────── Mobile ───────────── */
 @media (max-width: 860px) {
-  .hero { grid-template-columns: 1fr; align-content: center; gap: 44px; text-align: center; }
-  .hero__logo { width: min(64vw, 40vh, 340px); }
+  /* Todo el inicio tiene que entrar en una pantalla de celular, con las barras del navegador */
+  .hero {
+    grid-template-columns: 1fr; align-content: center; justify-items: center; gap: 14px; text-align: center;
+    padding: calc(var(--nav-h) + 8px) var(--gutter) 28px;
+  }
+  .hero__logo { width: min(54vw, 30vh, 300px); width: min(54vw, 30svh, 300px); margin-top: 4vh; }
+  .hero__replay { margin: 4px auto 0; }
   .hero__copy { margin: 0 auto; }
-  .hero__actions { justify-content: center; }
-
+  h1 { margin-top: 10px; font-size: clamp(1.9rem, 8.6vw, 2.8rem); }
+  .hero__lead { margin-top: 12px; }
+  .hero__actions { justify-content: center; margin-top: 20px; }
 
   .menu__body.has-viewer { grid-template-columns: 1fr; gap: 16px; }
   .viewer {
