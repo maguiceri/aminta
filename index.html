@@ -55,6 +55,8 @@
             <circle class="l-dot" cx="703" cy="465" r="26"/>
             <path class="draw l-n" pathLength="1" d="M793.5 795V663A106.75 106.75 0 0 1 1007 663V795"/>
           </g>
+          <!-- Caja invisible con el lugar de la taza: de acá sale la taza que viaja hasta la carta -->
+          <rect class="logo__cup-box" x="462" y="840" width="259" height="264" fill="none"/>
           <g transform="translate(591 970)">
             <g class="logo__cup">
               <path d="M-129 -112H130"/>
@@ -67,7 +69,7 @@
 
       <h1 class="sr-only">Aminta, café de especialidad en Balvanera</h1>
       <a class="hero__down" href="#carta">
-        Ver carta
+        <span data-split="letters">Ver carta</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M5 12l7 7 7-7"/></svg>
       </a>
     </section>
@@ -75,45 +77,21 @@
     <!-- ───────────── Carta ───────────── -->
     <section class="menu" id="carta">
       <div class="wrap">
-        <header class="menu__head reveal">
-          <p class="eyebrow">La carta</p>
-          <h2>¿Qué vas a tomar?</h2>
-          <p class="menu__hint" id="menu-hint">Elegí un café y mirá cómo se arma la taza.</p>
+        <!-- data-after-cup: aparecen cuando la taza viajera pasa por delante (ver script.js) -->
+        <header class="menu__head">
+          <p class="eyebrow reveal" data-split data-after-cup>La carta</p>
+          <h2 class="reveal" data-split data-after-cup>¿Qué vas a pedir?</h2>
+          <p class="menu__hint reveal" id="menu-hint" data-split data-after-cup>Elegí un café y mirá cómo se arma la taza.</p>
         </header>
 
-        <div class="tabs" role="tablist" aria-label="Secciones de la carta" id="tabs"></div>
+        <div class="tabs reveal" data-after-cup role="tablist" aria-label="Secciones de la carta" id="tabs"></div>
 
         <div class="menu__body" id="menu-body">
-          <!-- Visor: la taza del logo se llena con las capas de cada bebida -->
+          <!-- Visor: la taza del logo baja hasta acá y se llena con las capas de cada bebida -->
           <aside class="viewer" id="viewer" aria-live="polite">
             <div class="viewer__stage">
-              <svg class="viewer__svg" viewBox="330 330 592 640" aria-hidden="true">
-                <defs>
-                  <clipPath id="cup-clip"><path d="M427.5 470H825V690A198.75 188 0 0 1 427.5 690Z"/></clipPath>
-                </defs>
-                <g transform="translate(626 950)">
-                  <g class="viewer__cup" id="viewer-cup">
-                    <g transform="translate(-626 -950)">
-                      <g clip-path="url(#cup-clip)">
-                        <rect class="layer" x="420" y="470" width="412" height="412"/>
-                        <rect class="layer" x="420" y="470" width="412" height="412"/>
-                        <rect class="layer" x="420" y="470" width="412" height="412"/>
-                        <rect class="layer" x="420" y="470" width="412" height="412"/>
-                        <g class="ice" id="ice">
-                          <rect x="520" y="560" width="74" height="74" rx="8" transform="rotate(-14 557 597)"/>
-                          <rect x="650" y="610" width="74" height="74" rx="8" transform="rotate(18 687 647)"/>
-                          <rect x="560" y="700" width="74" height="74" rx="8" transform="rotate(8 597 737)"/>
-                        </g>
-                      </g>
-                      <g class="cup-stroke">
-                        <path d="M355 434H896"/>
-                        <path d="M391.5 434V690A234.75 224 0 0 0 861 690"/>
-                        <path d="M861 400V935"/>
-                      </g>
-                    </g>
-                  </g>
-                </g>
-              </svg>
+              <!-- Lugar donde se apoya la taza viajera (#float-cup) -->
+              <div class="viewer__slot" id="viewer-slot"></div>
             </div>
             <div class="viewer__info">
               <h3 id="viewer-name"></h3>
@@ -130,8 +108,8 @@
     <!-- ───────────── Visitanos ───────────── -->
     <section class="visit" id="visitanos">
       <div class="wrap">
-        <p class="eyebrow reveal">Visitanos</p>
-        <h2 class="reveal">Te esperamos en Balvanera.</h2>
+        <p class="eyebrow reveal" data-split>Visitanos</p>
+        <h2 class="reveal" data-split>Te esperamos en Balvanera.</h2>
         <dl class="visit__grid">
           <div class="reveal">
             <dt>Dónde</dt>
@@ -157,6 +135,30 @@
       <a href="#inicio">Volver arriba</a>
     </div>
   </footer>
+
+  <!-- La taza del logo. Una sola para toda la página: sale del logo, acompaña el scroll
+       y se apoya en el visor de la carta, donde se llena con cada café. -->
+  <svg class="float-cup is-hidden" id="float-cup" viewBox="355 400 541 550" aria-hidden="true">
+    <defs>
+      <clipPath id="cup-clip"><path d="M427.5 470H825V690A198.75 188 0 0 1 427.5 690Z"/></clipPath>
+    </defs>
+    <g clip-path="url(#cup-clip)">
+      <rect class="layer" x="420" y="470" width="412" height="412"/>
+      <rect class="layer" x="420" y="470" width="412" height="412"/>
+      <rect class="layer" x="420" y="470" width="412" height="412"/>
+      <rect class="layer" x="420" y="470" width="412" height="412"/>
+      <g class="ice">
+        <rect x="520" y="560" width="74" height="74" rx="8" transform="rotate(-14 557 597)"/>
+        <rect x="650" y="610" width="74" height="74" rx="8" transform="rotate(18 687 647)"/>
+        <rect x="560" y="700" width="74" height="74" rx="8" transform="rotate(8 597 737)"/>
+      </g>
+    </g>
+    <g class="cup-stroke">
+      <path d="M355 434H896"/>
+      <path d="M391.5 434V690A234.75 224 0 0 0 861 690"/>
+      <path d="M861 400V935"/>
+    </g>
+  </svg>
 
   <script src="menu-data.js"></script>
   <script src="script.js"></script>

@@ -24,6 +24,7 @@ const CARTA = [
     id: 'cafe',
     nombre: 'Café',
     taza: true,
+    inicial: 'Capuccino', // el café que se sirve mientras la taza baja desde el logo
     nota: NOTA_LECHES,
     items: [
       { nombre: 'Espresso', precio: 3600, ml: 80, capas: [['espresso', 0.5]] },
@@ -100,6 +101,88 @@ const CARTA = [
           { nombre: 'Gaseosa', precio: 3500 },
           { nombre: 'Agua saborizada', precio: 3500 },
           { nombre: 'Agua', precio: 3200 },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'desayunos',
+    nombre: 'Desayunos y meriendas',
+    grupos: [
+      {
+        titulo: 'Desayunos y meriendas',
+        columnas: true,
+        items: [
+          { nombre: 'Pancakes livianas', precio: 8900, detalle: 'Pancakes de avena y banana con frutas de estación y miel' },
+          { nombre: 'Pancakes americanas', precio: 8900, detalle: 'Pancakes de harina de trigo con frutas de estación y miel' },
+          { nombre: 'Tostado jamón y queso', precio: 9400, detalle: 'Pan brioche con jamón natural y queso tybo' },
+          { nombre: 'Árabe jamón y queso', precio: 12000, detalle: 'Pan sin gluten con jamón cocido y queso muzzarella' },
+          { nombre: 'Dúo saludable', precio: 7300, detalle: 'Huevos revueltos con palta. + Pan de semillas $900' },
+          { nombre: 'Croque madame', precio: 13500, detalle: 'Pan brioche con bechamel, jamón natural, queso tybo, parmesano y huevo poché' },
+          { nombre: 'Tostadas clásicas', precio: 7500, detalle: 'Pan de semillas tostado con mermelada casera de frutos rojos y queso crema' },
+          { nombre: 'Tostadas francesas', precio: 10900, detalle: 'Pan brioche dorado en manteca con frutas de estación, miel y azúcar impalpable' },
+          { nombre: 'Capresse keto', precio: 9800, detalle: 'Sándwich de pan nube esponjoso con tomate, queso mozzarella, albahaca y pesto' },
+          { nombre: 'Yogur con granola', precio: 9800, detalle: 'Yogur griego con frutas frescas de estación, granola casera decorado con miel' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'brunch',
+    nombre: 'Brunch',
+    grupos: [
+      {
+        titulo: 'Brunch',
+        columnas: true,
+        items: [
+          { nombre: 'Tostón francés', precio: 12900, detalle: 'Pan de masa madre con pasta de finlandia y queso azul, peras asadas, nueces y miel de ajo' },
+          { nombre: 'Tostón rosa', precio: 12100, detalle: 'Pan de masa madre con hummus de remolacha, portobello, hojas de espinaca y cebollas encurtidas' },
+          { nombre: 'Croissant ibérico', precio: 12300, detalle: 'Croissant relleno de jamón crudo, queso brie, rúcula, tomate cherry y queso crema' },
+          { nombre: 'Avocado toast', precio: 10200, detalle: 'Pan de masa madre con palta, huevo poché, tomate cherry, oliva y semillas' },
+          { nombre: 'Tostón silvestre', precio: 11500, detalle: 'Pan de masa madre con queso crema, frutos rojos, queso brie, frutas de estación y frutos secos' },
+          { nombre: 'Croissant americano', precio: 12300, detalle: 'Croissant crujiente relleno de huevo revuelto acompañado de láminas de panceta crocante' },
+          { nombre: 'Tostón Amalfi', precio: 12100, detalle: 'Pan de masa madre con ricota, tomate cherry confitados, frutos secos, pesto y lima' },
+          { nombre: 'Tostón de espinaca', precio: 12900, detalle: 'Pan brioche con espinaca, salsa bechamel, parmesano coronado con huevo poché y semillas' },
+          { nombre: 'Tostón de salmón', precio: 14100, detalle: 'Pan de masa madre con yogur griego, salmón ahumado, rabanitos y pepinos encurtidos' },
+          { nombre: 'Picadita Aminta', precio: 16000, detalle: 'Mix de jamón crudo, jamón natural, queso tybo, parmesano, tomate cherry y croutons' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'sandwiches',
+    nombre: 'Sándwiches',
+    nota: { titulo: '¡Podés cambiar tu pan!', texto: 'Libre de gluten, masa madre, integral de semillas, brioche.' },
+    grupos: [
+      {
+        titulo: 'Sándwiches',
+        columnas: true,
+        items: [
+          { nombre: 'Sándwich ibérico', precio: 14900, detalle: 'Pan de semillas con jamón crudo, queso tybo, pesto, rúcula, tomate cherry y huevo frito' },
+          { nombre: 'Sándwich de pollo', precio: 14900, detalle: 'Pan de semillas con pollo, hongos portobello, queso tybo, pesto rojo, cherry, rúcula y queso crema' },
+          { nombre: 'Sándwich de atún', precio: 13500, detalle: 'Pan ciabatta con atún, lechuga, tomate, huevo, mayonesa, limón y queso crema' },
+          { nombre: 'Sándwich mortadella', precio: 14400, detalle: 'Pan focaccia con mortadella, pistacho, pesto, bocconcinos y queso crema' },
+          { nombre: 'Pulled pork burguer', precio: 15900, detalle: 'Pan de boniato con bondiola de cerdo desmenuzado, queso tybo, cebolla caramelizada y coleslaw' },
+          { nombre: 'Bagel veggie', precio: 10900, detalle: 'Pan de bagel casero con tomate cherry, palta, queso crema y huevo frito' },
+          { nombre: 'Bagel de jamón', precio: 11200, detalle: 'Pan de bagel casero con jamón natural, tomate cherry, palta, queso crema y huevo frito' },
+          { nombre: 'Bagel de salmón', precio: 14900, detalle: 'Pan de bagel casero con salmón, queso brie, rúcula, tomate cherry y queso crema' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'ensaladas',
+    nombre: 'Ensaladas',
+    grupos: [
+      {
+        titulo: 'Ensaladas',
+        columnas: true,
+        items: [
+          { nombre: 'Ensalada tropical', precio: 18000, detalle: 'Camarones salteados, mango, palta, cebolla morada, cilantro y lechuga sobre colchón de arroz sushi con aderezo de lima y ajo' },
+          { nombre: 'Ensalada de salmón', precio: 18000, detalle: 'Salmón ahumado, palta, queso brie, tomate cherry sobre colchón de rúcula y lechuga, aderezado con salsa de mostaza y miel' },
+          { nombre: 'Ensalada de quinoa', precio: 17000, detalle: 'Batatas y calabazas asadas con ricota, rúcula, nueces y castañas de cajú sobre quinoa, aderezado con salsa de mostaza y miel' },
+          { nombre: 'Ensalada mediterránea', precio: 17000, detalle: 'Fideos tricolor con trozos de pollo, mozzarella, tomate cherry, aceitunas negras, albahaca, aderezado con pesto' },
+          { nombre: 'Ensalada César', precio: 15000, detalle: 'Trozos de pollo, croutons, queso parmesano, panceta crispy, sobre colchón de lechuga, aderezado con salsa César' },
         ],
       },
     ],

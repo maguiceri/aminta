@@ -104,9 +104,11 @@ h2 {
 /* Intro: solo corre con .is-playing; sin esa clase se ve el estado final */
 .logo .logo__stream { opacity: 0; }
 .hero.is-playing .logo__cup { animation: cup-pour 2.75s linear both; }
-.hero.is-playing .logo__stream { opacity: 1; stroke-dasharray: 1; animation: stream 1.5s linear .55s both; }
+.hero.is-playing .logo__stream { opacity: 1; stroke-dasharray: 1.02 1.5; animation: stream 1.5s linear .55s both; }
 .hero.is-playing .draw {
-  stroke-dasharray: 1; animation: draw var(--t, .5s) linear both; animation-delay: var(--d);
+  /* el trazo y el hueco pasan un poco del largo del path: si miden justo 1, el redondeo
+     deja ver un pelito blanco en la punta antes de que la letra empiece a dibujarse */
+  stroke-dasharray: 1.02 1.5; animation: draw var(--t, .5s) linear both; animation-delay: var(--d);
 }
 .hero.is-playing .l-a1 { --d: .62s; --t: .45s; }
 .hero.is-playing .l-a2 { --d: 1.07s; --t: .13s; }
@@ -117,7 +119,8 @@ h2 {
 .hero.is-playing .l-i  { --d: 1.45s; --t: .25s; }
 .hero.is-playing .l-n  { --d: 1.5s; --t: .5s; animation-timing-function: cubic-bezier(.3, .2, .3, 1); }
 .hero.is-playing .l-dot { animation: pop .3s var(--ease-out) 1.7s both; }
-.hero.is-playing .hero__down { animation: fade .6s 2.6s both; }
+.hero.is-playing .hero__down { animation: fade .3s 2.35s both; }
+.hero.is-playing .hero__down .w > span { animation: word-up .5s var(--ease-out) both; animation-delay: calc(2.4s + var(--i) * 40ms); }
 
 /* La taza aparece arriba de la primera "a", se inclina y derrama la línea que
    escribe la palabra; después se endereza y salta a su lugar como última "a". */
@@ -132,9 +135,9 @@ h2 {
   100% { opacity: 1; transform: none; }
 }
 @keyframes stream {
-  0% { stroke-dashoffset: 1; } 8% { stroke-dashoffset: 0; } 90% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1; }
+  0% { stroke-dashoffset: 1.04; } 8% { stroke-dashoffset: 0; } 90% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1.04; }
 }
-@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes draw { from { stroke-dashoffset: 1.04; } to { stroke-dashoffset: 0; } }
 @keyframes pop { from { transform: scale(0); } 70% { transform: scale(1.25); } to { transform: scale(1); } }
 @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 @keyframes fade { from { opacity: 0; } }
@@ -150,6 +153,8 @@ h2 {
   overflow-x: auto; scrollbar-width: none;
 }
 .tabs::-webkit-scrollbar { display: none; }
+/* En escritorio las pestañas bajan a otra fila; en celular se deslizan de costado */
+@media (min-width: 861px) { .tabs { flex-wrap: wrap; overflow: visible; } }
 .tab {
   flex: none; min-height: 46px; padding: 0 20px;
   border: 2px solid var(--green); border-radius: 999px; background: none; cursor: pointer;
@@ -168,12 +173,25 @@ h2 {
   padding: 56px 28px 30px; border-radius: 999px 999px 28px 28px;
   background: var(--mist); color: var(--green); text-align: center;
 }
-.viewer__svg { display: block; width: min(100%, 230px); margin: 0 auto; overflow: visible; }
-.viewer__cup { transform: scale(var(--size, 1)); transition: transform .6s var(--ease-out); }
+.viewer__stage { display: flex; align-items: flex-end; justify-content: center; height: 236px; }
+.viewer__slot { width: calc(230px * var(--size, 1)); aspect-ratio: 541 / 550; transition: width .6s var(--ease-out); }
+
+/* ───────────── Taza viajera ───────────── */
+.float-cup {
+  position: fixed; left: 0; top: 0; z-index: 5;
+  width: 541px; height: 550px; overflow: visible; pointer-events: none;
+  transform-origin: 0 0; will-change: transform;
+  color: var(--green); transition: color .35s, opacity .3s;
+}
+.float-cup.on-dark { color: var(--white); }
+.float-cup.is-hidden { opacity: 0; transition: none; }
 .layer { transform: translateY(412px); transition: transform .7s var(--ease-out), fill .35s; }
+.float-cup.is-scrubbing .layer { transition: fill .35s; }
 .ice { opacity: 0; transition: opacity .4s .3s; }
 .ice rect { fill: var(--salmon); fill-opacity: .55; stroke: var(--white); stroke-opacity: .5; stroke-width: 4; }
-.viewer.is-iced .ice { opacity: 1; }
+.float-cup.is-iced .ice { opacity: 1; }
+/* Cuando la taza viajera toma el relevo, la del logo se oculta: están en el mismo lugar */
+.hero.cup-out .logo__cup { visibility: hidden; }
 
 .viewer__info { margin-top: 18px; min-height: 9.5em; }
 .viewer h3 { font-size: 1.5rem; font-weight: 800; line-height: 1.15; text-transform: uppercase; letter-spacing: -.01em; }
@@ -184,7 +202,17 @@ h2 {
 .legend i { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--green); }
 
 .panel[hidden] { display: none; }
-.panel { animation: rise .45s var(--ease-out); }
+/* Los productos entran desde el costado, en cascada: al asomar la carta y al cambiar de pestaña */
+.js .menu__body:not(.is-in) .panel li, .js .menu__body:not(.is-in) .note { opacity: 0; }
+.menu__body.is-in .panel:not([hidden]) li { animation: slide-in .6s var(--ease-out) both; animation-delay: calc(min(var(--i, 0), 14) * 40ms); }
+@keyframes slide-in { from { opacity: 0; transform: translateX(48px); } }
+.menu__body.is-in .panel:not([hidden]) .group h3 { animation: word-up .5s var(--ease-out) both; }
+.menu__body.is-in .panel:not([hidden]) .note { animation: rise .6s var(--ease-out) .35s both; }
+
+/* El nombre, el precio y los ingredientes del visor cambian con un pequeño salto */
+.viewer__info.swap h3 { animation: word-up .45s var(--ease-out) both; }
+.viewer__info.swap .viewer__meta { animation: word-up .45s var(--ease-out) .05s both; }
+.viewer__info.swap .legend li { animation: rise .45s var(--ease-out) both; animation-delay: calc(.1s + var(--i, 0) * 50ms); }
 
 .drinks { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
 .drink {
@@ -232,6 +260,26 @@ h2 {
 /* ───────────── Aparición al hacer scroll ───────────── */
 .js .reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s var(--ease-out), transform .7s var(--ease-out); transition-delay: var(--rd, 0s); }
 .js .reveal.is-in { opacity: 1; transform: none; }
+
+/* Títulos que entran palabra por palabra (o letra por letra), subiendo desde atrás de una línea */
+.w { display: inline-block; overflow: hidden; vertical-align: top; padding: .16em .04em .1em; margin: -.16em -.04em -.1em; }
+.w > span { display: inline-block; }
+.js .reveal[data-split] { opacity: 1; transform: none; }
+.js .reveal[data-split] .w > span {
+  opacity: 0; transform: translateY(115%) rotate(7deg); transform-origin: 0 100%;
+  transition: transform .9s cubic-bezier(.2, .9, .2, 1), opacity .5s ease;
+  transition-delay: calc(var(--rd, 0s) + var(--i) * 70ms);
+}
+.js .reveal[data-split].is-in .w > span { opacity: 1; transform: none; }
+.menu__head h2, .visit h2 { --rd: .12s; }
+.menu__hint { --rd: .45s; }
+
+/* Las pestañas aparecen una tras otra */
+.js .tabs.reveal { opacity: 1; transform: none; }
+.js .tabs:not(.is-in) .tab { opacity: 0; }
+.tabs.is-in .tab { animation: pop-in .55s var(--ease-out) both; animation-delay: calc(.3s + var(--i, 0) * 45ms); }
+@keyframes pop-in { from { opacity: 0; transform: translateY(14px) scale(.88); } }
+@keyframes word-up { from { opacity: 0; transform: translateY(70%); } }
 .visit__grid .reveal:nth-child(2) { --rd: .1s; }
 .visit__grid .reveal:nth-child(3) { --rd: .2s; }
 
@@ -247,6 +295,8 @@ h2 {
     padding: 12px 18px; border-radius: 20px; text-align: left;
     box-shadow: 0 8px 24px rgba(48, 92, 86, .16);
   }
+  .viewer__stage { height: 94px; }
+  .viewer__slot { width: calc(92px * var(--size, 1)); }
   .viewer__info { margin: 0; min-height: 6.6em; }
   .viewer h3 { font-size: 1.1rem; }
   .viewer__meta, .legend { justify-content: flex-start; }
@@ -259,4 +309,5 @@ h2 {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; transition-delay: 0s !important; }
   .js .reveal { opacity: 1; transform: none; }
+  .js [data-split] .w > span, .js .tabs .tab, .js .menu__body .panel li, .js .menu__body .note { opacity: 1 !important; transform: none !important; }
 }
