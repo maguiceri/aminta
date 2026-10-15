@@ -46,7 +46,7 @@
       else link.removeAttribute('aria-current');
     });
   }
-  addEventListener('scroll', () => { onScroll(); kick(); }, { passive: true });
+  addEventListener('scroll', () => { onScroll(); renderCup(); }, { passive: true });
   addEventListener('resize', () => { onScroll(); kick(); });
   onScroll();
 
@@ -267,6 +267,7 @@
   const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
   const smooth = (a, b, x) => { const k = Math.min(Math.max((x - a) / (b - a), 0), 1); return k * k * (3 - 2 * k); };
   let running = false;
+  let docked = false; // la taza ya llegó al visor: al subir se queda ahí
   let until = 0;
 
   function travelProgress(slotBox) {
@@ -285,14 +286,20 @@
 
     // Mientras corre la intro, la taza es la del logo
     floatCup.classList.toggle('is-hidden', intro || (reducedMotion && !hasSlot));
-    hero.classList.toggle('cup-out', !intro && !reducedMotion);
-    if (intro) return;
+    if (intro) { hero.classList.remove('cup-out'); return; }
 
     // Sin visor (pestañas de comida) la taza se queda en el logo.
     // Con movimiento reducido no viaja: aparece directamente en el visor.
     let t = hasSlot ? travelProgress(to) : 0;
     if (reducedMotion) t = 1;
-    const e = ease(t);
+
+    // El viaje es solo de ida. Una vez que la taza llega al visor queda ahí, y al volver
+    // hacia arriba se va con la carta (no vuelve volando por encima del contenido); el logo
+    // muestra su propia taza. Al llegar de nuevo arriba de todo, el viaje se rearma.
+    if (t >= 1) docked = true;
+    else if (t <= 0) docked = false;
+    hero.classList.toggle('cup-out', !reducedMotion && !docked);
+    const e = docked ? 1 : ease(t);
     const a = reducedMotion ? to : from;
     const b = hasSlot ? to : from;
     const w = a.width + (b.width - a.width) * e;
@@ -313,8 +320,8 @@
     });
 
     // Se llena durante la segunda mitad del viaje; ya apoyada, los cambios se animan
-    const fill = smooth(0.35, 1, t);
-    floatCup.classList.toggle('is-scrubbing', t < 1);
+    const fill = docked ? 1 : smooth(0.35, 1, t);
+    floatCup.classList.toggle('is-scrubbing', t < 1 && !docked);
     layers.forEach((rect, i) => {
       rect.style.transform = `translateY(${(1 - levels[i] * fill) * LAYER_H}px)`;
     });
