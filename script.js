@@ -243,9 +243,7 @@
         io.unobserve(entry.target);
       });
     }, { threshold: 0.15 });
-    // Lo marcado con data-after-cup lo revela la taza viajera (renderCup); sin movimiento, el scroll
-    const byCup = reducedMotion ? '' : ':not([data-after-cup])';
-    document.querySelectorAll('.reveal' + byCup).forEach((el) => io.observe(el));
+    document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
     // Las opciones entran del costado apenas la carta asoma por abajo, sin esperar a la taza.
     // La carta es muy alta: por eso alcanza con que asome, en vez de pedir un porcentaje visible.
     new IntersectionObserver(([entry], obs) => {
@@ -257,54 +255,57 @@
   }
 
   /* ───────────── Taza viajera ─────────────
-     Una sola taza para toda la página. Arranca exactamente sobre la última "a" del logo
-     y, a medida que se hace scroll, baja hasta el visor de la carta llenándose con el
-     café elegido. Su avance (t) depende solo del scroll: llega justo cuando el visor
-     queda fijo arriba. */
+     Una sola taza para toda la página. Al empezar a bajar, la taza sale sola de la última
+     "a" del logo y vuela hasta el visor de la carta, llenándose con el café elegido. El vuelo
+     dura lo mismo siempre: no depende de cuánto ni de qué tan rápido se haga scroll.
+     Ya apoyada, se queda en el visor (se va con la carta al subir). Al volver arriba de
+     todo, el logo recupera su taza y el vuelo se rearma. */
   const logoBox = $('.logo__cup-box');
-  const afterCup = [...document.querySelectorAll('[data-after-cup]')];
   const CUP_W = 541, CUP_H = 550; // tamaño base del SVG, igual a su viewBox
+  const FLIGHT_MS = 1100;
+  const LEAVE_AT = 40; // px de scroll para que la taza salga del logo
   const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
   const smooth = (a, b, x) => { const k = Math.min(Math.max((x - a) / (b - a), 0), 1); return k * k * (3 - 2 * k); };
   let running = false;
-  let docked = false; // la taza ya llegó al visor: al subir se queda ahí
   let until = 0;
-
-  function travelProgress(slotBox) {
-    // Dónde queda el visor cuando está fijo: su `top` sticky + la distancia del slot dentro del visor
-    const viewerBox = viewer.getBoundingClientRect();
-    const pinnedTop = parseFloat(getComputedStyle(viewer).top) + (slotBox.top - viewerBox.top);
-    const distance = slotBox.top + scrollY - pinnedTop;
-    return distance > 0 ? Math.min(Math.max(scrollY / distance, 0), 1) : 1;
-  }
+  let state = 'home'; // home: en el logo · flying: volando · docked: apoyada en el visor
+  let flightStart = 0;
 
   function renderCup() {
     const intro = hero.classList.contains('is-playing');
-    const from = logoBox.getBoundingClientRect();
     const to = slot.getBoundingClientRect();
     const hasSlot = to.width > 0;
 
-    // Mientras corre la intro, la taza es la del logo
-    floatCup.classList.toggle('is-hidden', intro || (reducedMotion && !hasSlot));
-    if (intro) { hero.classList.remove('cup-out'); return; }
+    if (intro) {
+      floatCup.classList.add('is-hidden');
+      hero.classList.remove('cup-out');
+      return;
+    }
 
-    // Sin visor (pestañas de comida) la taza se queda en el logo.
-    // Con movimiento reducido no viaja: aparece directamente en el visor.
-    let t = hasSlot ? travelProgress(to) : 0;
-    if (reducedMotion) t = 1;
+    // Con movimiento reducido no vuela: el logo conserva su taza y la del visor ya está ahí
+    if (reducedMotion) state = 'docked';
+    else if (scrollY < 10) state = 'home';
+    else if (state === 'home' && scrollY > LEAVE_AT && hasSlot) {
+      state = 'flying';
+      flightStart = performance.now();
+      kick(FLIGHT_MS + 50);
+    }
 
-    // El viaje es solo de ida. Una vez que la taza llega al visor queda ahí, y al volver
-    // hacia arriba se va con la carta (no vuelve volando por encima del contenido); el logo
-    // muestra su propia taza. Al llegar de nuevo arriba de todo, el viaje se rearma.
-    if (t >= 1) docked = true;
-    else if (t <= 0) docked = false;
-    hero.classList.toggle('cup-out', !reducedMotion && !docked);
-    const e = docked ? 1 : ease(t);
-    const a = reducedMotion ? to : from;
-    const b = hasSlot ? to : from;
-    const w = a.width + (b.width - a.width) * e;
-    const x = a.left + (b.left - a.left) * e + w / 2;
-    const y = a.top + (b.top - a.top) * e + (w * CUP_H / CUP_W) / 2;
+    const showFloat = state !== 'home' && hasSlot;
+    floatCup.classList.toggle('is-hidden', !showFloat);
+    hero.classList.toggle('cup-out', showFloat && !reducedMotion);
+    if (!showFloat) return;
+
+    let p = 1;
+    if (state === 'flying') {
+      p = Math.min((performance.now() - flightStart) / FLIGHT_MS, 1);
+      if (p >= 1) state = 'docked';
+    }
+    const e = ease(p);
+    const from = logoBox.getBoundingClientRect();
+    const w = from.width + (to.width - from.width) * e;
+    const x = from.left + (to.left - from.left) * e + w / 2;
+    const y = from.top + (to.top - from.top) * e + (w * CUP_H / CUP_W) / 2;
     const tilt = Math.sin(e * Math.PI) * -14; // se ladea un poco en el camino
     floatCup.style.transform =
       `translate(${x}px, ${y}px) rotate(${tilt}deg) scale(${w / CUP_W}) translate(${-CUP_W / 2}px, ${-CUP_H / 2}px)`;
@@ -312,16 +313,9 @@
     // Blanca sobre el verde del inicio, verde sobre la carta
     floatCup.classList.toggle('on-dark', y < hero.getBoundingClientRect().bottom);
 
-    // El título, la bajada y las pestañas aparecen a medida que la taza pasa por delante
-    afterCup.forEach((el) => {
-      if (!el.classList.contains('is-in') && (t >= 1 || !hasSlot || y > el.getBoundingClientRect().bottom)) {
-        el.classList.add('is-in');
-      }
-    });
-
-    // Se llena durante la segunda mitad del viaje; ya apoyada, los cambios se animan
-    const fill = docked ? 1 : smooth(0.35, 1, t);
-    floatCup.classList.toggle('is-scrubbing', t < 1 && !docked);
+    // Se llena en la segunda mitad del vuelo; ya apoyada, los cambios de café se animan solos
+    const fill = smooth(0.4, 1, p);
+    floatCup.classList.toggle('is-scrubbing', state === 'flying');
     floatCup.style.setProperty('--ice', fill);
     layers.forEach((rect, i) => {
       rect.style.transform = `translateY(${(1 - levels[i] * fill) * LAYER_H}px)`;

@@ -193,8 +193,10 @@ h2 {
    de vuelta en el logo, no se ven */
 .float-cup.is-iced .ice { opacity: var(--ice, 1); }
 .float-cup.is-scrubbing .ice { transition: none; }
-/* Cuando la taza viajera toma el relevo, la del logo se oculta: están en el mismo lugar */
-.hero.cup-out .logo__cup { visibility: hidden; }
+/* Cuando la taza viajera sale, la del logo se oculta al instante (están en el mismo lugar);
+   al volver arriba de todo, reaparece suave */
+.logo__cup { transition: opacity .5s ease; }
+.hero.cup-out .logo__cup { opacity: 0; transition: none; }
 
 .viewer__info { margin-top: 18px; min-height: 9.5em; }
 .viewer h3 { font-size: 1.5rem; font-weight: 800; line-height: 1.15; text-transform: uppercase; letter-spacing: -.01em; }
