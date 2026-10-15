@@ -322,6 +322,7 @@
     // Se llena durante la segunda mitad del viaje; ya apoyada, los cambios se animan
     const fill = docked ? 1 : smooth(0.35, 1, t);
     floatCup.classList.toggle('is-scrubbing', t < 1 && !docked);
+    floatCup.style.setProperty('--ice', fill);
     layers.forEach((rect, i) => {
       rect.style.transform = `translateY(${(1 - levels[i] * fill) * LAYER_H}px)`;
     });

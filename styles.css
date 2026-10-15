@@ -189,7 +189,10 @@ h2 {
 .float-cup.is-scrubbing .layer { transition: fill .35s; }
 .ice { opacity: 0; transition: opacity .4s .3s; }
 .ice rect { fill: var(--salmon); fill-opacity: .55; stroke: var(--white); stroke-opacity: .5; stroke-width: 4; }
-.float-cup.is-iced .ice { opacity: 1; }
+/* Los cubitos acompañan el llenado (--ice lo pone script.js): con la taza vacía, por ejemplo
+   de vuelta en el logo, no se ven */
+.float-cup.is-iced .ice { opacity: var(--ice, 1); }
+.float-cup.is-scrubbing .ice { transition: none; }
 /* Cuando la taza viajera toma el relevo, la del logo se oculta: están en el mismo lugar */
 .hero.cup-out .logo__cup { visibility: hidden; }
 
